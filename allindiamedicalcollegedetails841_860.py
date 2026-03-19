@@ -8867,12 +8867,18 @@ def parse_articles_section(driver,URLS):
     except TimeoutException:
         print("⚠️ Articles section not found, skipping...")
         return []
+    
     driver.execute_script(
         "arguments[0].scrollIntoView({block:'center'});", section
     )
     time.sleep(2)
-
-    html = driver.execute_script("return arguments[0].innerHTML;", section)
+    
+    # Re-find element to avoid stale reference
+    section = driver.find_element(By.ID, "Articles")
+    
+    html = driver.execute_script(
+        "return arguments[0].innerHTML;", section
+    )
     soup = BeautifulSoup(html, "html.parser")
 
     articles_data = []
